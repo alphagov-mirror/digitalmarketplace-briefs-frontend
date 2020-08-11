@@ -1,4 +1,6 @@
 {% extends "_base_page.html" %}
+
+{% from "govuk/components/label/macro.njk" import govukLabel %}
 {% import "toolkit/forms/macros/forms.html" as forms %}
 
 {% block pageTitle %}
@@ -29,9 +31,11 @@
       <div class="govuk-grid-column-two-thirds">
           {% if question.type != 'multiquestion' %}
             {% if is_govuk_frontend %}
-              {% set macro_name, params = govuk_frontend_from_question(question, brief, errors) %}
               {% set govuk_forms = {"govukInput": govukInput} %}
-              {{ govuk_forms[macro_name](params) }}
+              {% set form = govuk_frontend_from_question(question, brief, errors) %}
+              {{ govukLabel(form.label) }}
+              {{ question.question_advice }}
+              {{ govuk_forms[form.macro_name](form.params) }}
             {% elif errors and errors[question.id] %}
               {{ forms[question.type](question, brief, errors) }}
             {% else %}
