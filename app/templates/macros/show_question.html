@@ -10,28 +10,30 @@
 
 {%- macro show_question(question, brief, errors, is_only_question=True) %}
   {% set form = govuk_frontend_from_question(question, brief, errors, is_page_heading=is_only_question) %}
-  {% set govuk_forms = {
-    "govukInput": govukInput, 
-    "govukRadios": govukRadios,
-    "govukCheckboxes": govukCheckboxes,
-    "govukDateInput": govukDateInput, 
-    "dmListInput": dmListInput, 
-    "govukCharacterCount": govukCharacterCount
-  } %}
-  {%- if form.label %}
-    {{ govukLabel(form.label) }}
-  {% endif -%}
-  {% if form.fieldset %}
-    {% call govukFieldset(form.fieldset) %}
+  {% if form %}
+    {% set govuk_forms = {
+      "govukInput": govukInput, 
+      "govukRadios": govukRadios,
+      "govukCheckboxes": govukCheckboxes,
+      "govukDateInput": govukDateInput, 
+      "dmListInput": dmListInput, 
+      "govukCharacterCount": govukCharacterCount
+    } %}
+    {%- if form.label %}
+      {{ govukLabel(form.label) }}
+    {% endif -%}
+    {% if form.fieldset %}
+      {% call govukFieldset(form.fieldset) %}
+        {% if not form.params.question_advice %}
+          {{ question.question_advice }}
+        {% endif %}
+        {{ govuk_forms[form.macro_name](form.params) }}
+      {% endcall %}
+    {% else %}
       {% if not form.params.question_advice %}
         {{ question.question_advice }}
       {% endif %}
       {{ govuk_forms[form.macro_name](form.params) }}
-    {% endcall %}
-  {% else %}
-    {% if not form.params.question_advice %}
-      {{ question.question_advice }}
     {% endif %}
-    {{ govuk_forms[form.macro_name](form.params) }}
   {% endif %}
 {% endmacro -%}
